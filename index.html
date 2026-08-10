@@ -634,17 +634,18 @@ counters.forEach(function(el){ counterObserver.observe(el); });
 // scrollspy
 const sections = document.querySelectorAll('section, header.hero');
 const navLinks = document.querySelectorAll('.nav-links a');
-const spyObserver = new IntersectionObserver(function(entries){
-  entries.forEach(function(entry){
-    if(entry.isIntersecting){
-      const id = entry.target.getAttribute('id');
-      navLinks.forEach(function(link){
-        link.classList.toggle('active', link.getAttribute('href') === '#' + id);
-      });
-    }
+function updateSpy(){
+  let current = null;
+  sections.forEach(function(sec){
+    const rect = sec.getBoundingClientRect();
+    if(rect.top <= 140){ current = sec.getAttribute('id'); }
   });
-}, {threshold:0.5, rootMargin:'-40% 0px -40% 0px'});
-sections.forEach(function(sec){ spyObserver.observe(sec); });
+  navLinks.forEach(function(link){
+    link.classList.toggle('active', current && link.getAttribute('href') === '#' + current);
+  });
+}
+document.addEventListener('scroll', updateSpy, {passive:true});
+updateSpy();
 </script>
 </body>
 </html>
